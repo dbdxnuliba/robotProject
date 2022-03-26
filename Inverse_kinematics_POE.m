@@ -4,12 +4,11 @@ function[q] = Inverse_kinematics_POE(q0,Td)
 %如果初始估计值与真实值没有足够接近，则迭代过程可能不收敛
 %解出来的角度与初始角度有关
 theta = q0;
-%循环迭代1000次
 for i = 1:1000
    disp(i)
    T_sb = Forward_kinematics_POE(theta);
    T_bd = inv(T_sb)*Td;  %以e为底
-   Vb_frame = logm(T_bd);
+   Vb_frame = logm(T_bd); %T_bd的矩阵对数
    v = Vb_frame(1:3,4);
    w_frame = Vb_frame(1:3,1:3);
    %速度旋量Vb 维度6*1 
@@ -19,7 +18,7 @@ for i = 1:1000
    errorw = norm(xitew)
    errorv = norm(xitev)
    %如果满足设定的误差最小值则停止循环
-   if errorw < 1e-8 || errorv < 1e-8
+   if errorw < 1e-8 || errorv < 1e-8   %if errorw < 1e-8 && errorv < 1e-8
        q = theta;
        break
    end
